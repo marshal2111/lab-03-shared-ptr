@@ -52,6 +52,7 @@ public:
             if (*refCount > 0) {
                 (*refCount)--;
             }
+            
             if (*refCount == 0) {
                 delete obj;
                 obj = nullptr;
