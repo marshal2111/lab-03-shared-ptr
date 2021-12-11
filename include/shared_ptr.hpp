@@ -27,7 +27,7 @@ public:
         obj = r.obj;
         refCount = r.refCount;
         if (r.obj != nullptr) {
-    	    (*refCount)++;
+            (*refCount)++;
         }
     }
     SharedPtr(SharedPtr&& r) {
@@ -36,106 +36,106 @@ public:
     }
     ~SharedPtr() {
         if (*refCount > 0) {
-    	    (*refCount)--;
+            (*refCount)--;
         }
         if (*refCount == 0) {
-    	    delete obj;
-    	    obj = nullptr;
-    	    delete refCount;
-    	    refCount = nullptr;
+            delete obj;
+            obj = nullptr;
+            delete refCount;
+            refCount = nullptr;
         }
     }
 
     auto operator=(const SharedPtr& r) -> SharedPtr& {
         if (obj != r.obj) {
-    	    if (*refCount > 0) {
-    		    (*refCount)--;
-    	    }
-    	    if (*refCount == 0) {
-    		    delete obj;
-    		    obj = nullptr;
-    		    delete refCount;
-    		    refCount = nullptr;
-    	    } 
-    	    refCount = r.refCount;
-    	    obj = r.obj;
-    	    if (r.obj != nullptr) {
-    		    (*refCount)++;
-    	    }
+            if (*refCount > 0) {
+                (*refCount)--;
+            }
+            if (*refCount == 0) {
+                delete obj;
+                obj = nullptr;
+                delete refCount;
+                refCount = nullptr;
+            } 
+            refCount = r.refCount;
+            obj = r.obj;
+            if (r.obj != nullptr) {
+                (*refCount)++;
+            }
         }
         return *this;
     }
     auto operator=(SharedPtr&& r) -> SharedPtr& {
         if (obj != r.obj) {
-    	    if (*refCount > 0) {
-    	        (*refCount)--;
-    	    }
-    	    if (*refCount == 0) {
-    		    delete obj;
-    		    obj = nullptr;
-    		    delete refCount;
-    		    refCount = nullptr;
-    		}
-    	    obj = std::move(r.obj);
-    	    refCount = std::move(r.refCount);
+            if (*refCount > 0) {
+                (*refCount)--;
+            }
+            if (*refCount == 0) {
+                delete obj;
+                obj = nullptr;
+                delete refCount;
+                refCount = nullptr;
+            }
+            obj = std::move(r.obj);
+            refCount = std::move(r.refCount);
         }
         return *this;
     }
 
     // проверяет, указывает ли указатель на объект
     operator bool() const {
-    	return obj != nullptr;
+        return obj != nullptr;
     }
     auto operator*() const -> T& {
-    	return obj;
+        return obj;
     }
     auto operator->() const -> T* {
-    	return obj;
+        return obj;
     }
 
     auto get() -> T* {
-    	return obj;
+        return obj;
     }
     void reset() {
-    	if (*refCount > 0) {
-    		(*refCount)--;
-    	}
-    	if (*refCount == 0) {
-    		delete obj;
-    		obj = nullptr;
-    		delete refCount;
-    		refCount = nullptr;
-    	}
-    	obj = nullptr;
-    	refCount = new std::atomic_uint{0};
+        if (*refCount > 0) {
+            (*refCount)--;
+        }
+        if (*refCount == 0) {
+            delete obj;
+            obj = nullptr;
+            delete refCount;
+            refCount = nullptr;
+        }
+        obj = nullptr;
+        refCount = new std::atomic_uint{0};
     }
     void reset(T* ptr) {
-    	if (*refCount > 0) {
-    		(*refCount)--;
-    	}
-    	if (*refCount == 0) {
-    		delete obj;
-    		obj = nullptr;
-    		delete refCount;
-    		refCount = nullptr;
-    	}
-    	obj = ptr;
-    	refCount = new std::atomic_uint{1};
+        if (*refCount > 0) {
+            (*refCount)--;
+        }
+        if (*refCount == 0) {
+            delete obj;
+            obj = nullptr;
+            delete refCount;
+            refCount = nullptr;
+        }
+        obj = ptr;
+        refCount = new std::atomic_uint{1};
     }
     void swapPtr(SharedPtr& r) {
-    	T* tmp_obj = obj;
-    	std::atomic_uint* tmp_count = refCount;
-    	obj = r.obj;
-    	refCount = r.refCount;
-    	r.obj = tmp_obj;
-    	r.refCount = tmp_count;
+        T* tmp_obj = obj;
+        std::atomic_uint* tmp_count = refCount;
+        obj = r.obj;
+        refCount = r.refCount;
+        r.obj = tmp_obj;
+        r.refCount = tmp_count;
     }
     auto use_count() const -> size_t {
-    	if (refCount == nullptr){
-    		return 0;
-    	} else {
-    		return *refCount;
-    	}
+        if (refCount == nullptr){
+            return 0;
+        } else {
+            return *refCount;
+        }
     }
 };
 
