@@ -5,6 +5,7 @@
 
 #include <atomic>
 #include <cstddef>
+#include <utility>
 
 auto example() -> void;
 
@@ -56,7 +57,7 @@ public:
                 obj = nullptr;
                 delete refCount;
                 refCount = nullptr;
-            } 
+            }
             refCount = r.refCount;
             obj = r.obj;
             if (r.obj != nullptr) {
