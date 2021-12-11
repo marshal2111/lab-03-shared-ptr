@@ -11,75 +11,75 @@ auto example() -> void;
 template <typename T>
 class SharedPtr {
 private:
-	T* obj = nullptr;
-	std::atomic_uint* refCount = nullptr;
+    T* obj = nullptr;
+    std::atomic_uint* refCount = nullptr;
 
 public:
     SharedPtr() {
-    	obj = nullptr;
-    	refCount = new std::atomic_uint{0};
+        obj = nullptr;
+        refCount = new std::atomic_uint{0};
     }
-    SharedPtr(T* ptr) {
-    	obj = ptr;
-    	refCount = new std::atomic_uint{1};
+    explicit SharedPtr(T* ptr) {
+        obj = ptr;
+        refCount = new std::atomic_uint{1};
     }
     SharedPtr(const SharedPtr& r) {
-    	obj = r.obj;
-    	refCount = r.refCount;
-    	if (r.obj != nullptr) {
-    		(*refCount)++;
-    	}
+        obj = r.obj;
+        refCount = r.refCount;
+        if (r.obj != nullptr) {
+    	    (*refCount)++;
+        }
     }
     SharedPtr(SharedPtr&& r) {
-    	obj = std::move(r.obj);
-    	refCount = std::move(r.refCount);
+        obj = std::move(r.obj);
+        refCount = std::move(r.refCount);
     }
     ~SharedPtr() {
-    	if (*refCount > 0) {
-    		(*refCount)--;	
-    	}
-    	if (*refCount == 0) {
-    		delete obj;
-    		obj = nullptr;
-    		delete refCount;
-    		refCount = nullptr;
-    	} 
+        if (*refCount > 0) {
+    	    (*refCount)--;
+        }
+        if (*refCount == 0) {
+    	    delete obj;
+    	    obj = nullptr;
+    	    delete refCount;
+    	    refCount = nullptr;
+        }
     }
 
     auto operator=(const SharedPtr& r) -> SharedPtr& {
-    	if (obj != r.obj) {
-    		if (*refCount > 0) {
-    			(*refCount)--;	
-    		}
-    		if (*refCount == 0) {
-    			delete obj;
-    			obj = nullptr;
-    			delete refCount;
-    			refCount = nullptr;
-    		} 
-    		refCount = r.refCount;
-    		obj = r.obj;
-    		if (r.obj != nullptr) {
-    			(*refCount)++;
-    		}
-    	}
-    	return *this;
+        if (obj != r.obj) {
+    	    if (*refCount > 0) {
+    		    (*refCount)--;
+    	    }
+    	    if (*refCount == 0) {
+    		    delete obj;
+    		    obj = nullptr;
+    		    delete refCount;
+    		    refCount = nullptr;
+    	    } 
+    	    refCount = r.refCount;
+    	    obj = r.obj;
+    	    if (r.obj != nullptr) {
+    		    (*refCount)++;
+    	    }
+        }
+        return *this;
     }
     auto operator=(SharedPtr&& r) -> SharedPtr& {
-    	if (obj != r.obj) {
-    		if (*refCount > 0) {
-    			(*refCount)--;
+        if (obj != r.obj) {
+    	    if (*refCount > 0) {
+    	        (*refCount)--;
+    	    }
+    	    if (*refCount == 0) {
+    		    delete obj;
+    		    obj = nullptr;
+    		    delete refCount;
+    		    refCount = nullptr;
     		}
-    		if (*refCount == 0) {
-    			delete obj;
-    			obj = nullptr;
-    			delete refCount;
-    			refCount = nullptr;
-    		} 
-    		obj = std::move(r.obj);
-    		refCount = std::move(r.refCount);
-    	}
-    	return *this;
+    	    obj = std::move(r.obj);
+    	    refCount = std::move(r.refCount);
+        }
+        return *this;
     }
 
     // проверяет, указывает ли указатель на объект
@@ -92,7 +92,7 @@ public:
     auto operator->() const -> T* {
     	return obj;
     }
-    
+
     auto get() -> T* {
     	return obj;
     }
@@ -122,7 +122,7 @@ public:
     	obj = ptr;
     	refCount = new std::atomic_uint{1};
     }
-    void swap(SharedPtr& r) {
+    void swapPtr(SharedPtr& r) {
     	T* tmp_obj = obj;
     	std::atomic_uint* tmp_count = refCount;
     	obj = r.obj;
@@ -130,7 +130,6 @@ public:
     	r.obj = tmp_obj;
     	r.refCount = tmp_count;
     }
-    // возвращает количество объектов SharedPtr, которые ссылаются на тот же управляемый объект
     auto use_count() const -> size_t {
     	if (refCount == nullptr){
     		return 0;
