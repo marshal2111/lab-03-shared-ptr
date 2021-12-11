@@ -2,7 +2,7 @@
 
 #include <stdexcept>
 
-#include <example.hpp>
+#include <shared_ptr.hpp>
 
 auto example() -> void {
   throw std::runtime_error("not implemented");
