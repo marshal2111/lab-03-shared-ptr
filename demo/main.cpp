@@ -21,5 +21,6 @@ int main() {
   ptr2 = ptr1;
   std::cout << ptr2.use_count() << std::endl;
   ptr4 = ptr2;
+  
   std::cout << ptr2.use_count() << std::endl;
 }
